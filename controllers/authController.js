@@ -28,7 +28,7 @@ const loginUser = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .send({ token, username: user.username, name: user.name });
+    .send({ token, username: user.username, name: user.name, id: user.id });
 };
 
 module.exports = { loginUser };

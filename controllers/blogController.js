@@ -2,9 +2,13 @@ const Blog = require('../models/Blog');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
+const { getIo } = require('../utils/socket');
 
 const getBlogs = async (req, res) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({}).populate('user', {
+    username: 1,
+    name: 1,
+  });
   res.status(StatusCodes.OK).json({ blogs, count: blogs.length });
 };
 
@@ -63,8 +67,8 @@ const getSingleBlog = async (req, res) => {
 };
 
 const deleteBlog = async (req, res) => {
-  const { id } = req.params;
-  const blog = await Blog.findById(id);
+  const { id: blogId } = req.params;
+  const blog = await Blog.findById(blogId);
   if (!blog) {
     return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Blog not found.' });
   }
@@ -85,30 +89,47 @@ const deleteBlog = async (req, res) => {
   }
 
   await blog.deleteOne();
+
+  const userId = blog.user;
+  const user = await User.findById(userId);
+  user.blogs = user.blogs.filter((b) => b.toString() !== blogId);
+  await user.save();
+
   res.status(StatusCodes.NO_CONTENT).end();
 };
 
 const updateBlog = async (req, res) => {
   const { id } = req.params;
-  const { title, author, url, likes } = req.body;
+  const { likes } = req.body;
+  const userId = req.user.id;
+  const io = getIo();
 
-  if (typeof likes === 'number') {
-    blog.likes = likes;
-  } else {
+  if (typeof likes !== 'number') {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: 'likes must be a number' });
   }
 
-  const blog = await Blog.findById(id);
-  if (!blog) {
-    return res.status(StatusCodes.NOT_FOUND).json({ error: 'blog not found' });
+  try {
+    const updatedBlog = await Blog.findById(id);
+    if (!updatedBlog) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: 'blog not found' });
+    }
+
+    if (!updatedBlog.likedBy.includes(userId)) {
+      updatedBlog.likes += 1;
+      updatedBlog.likedBy.push(userId);
+      await updatedBlog.save();
+
+      io.emit('blogLiked', { blogId: id, likes: updatedBlog.likes });
+    }
+
+    res.status(StatusCodes.OK).json(updatedBlog);
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
   }
-
-  blog.likes = likes;
-
-  const updatedBlog = await blog.save();
-  res.status(StatusCodes.OK).json(updatedBlog);
 };
 
 module.exports = {

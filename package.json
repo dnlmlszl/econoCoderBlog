@@ -25,7 +25,8 @@
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.4",
     "mongoose-unique-validator": "^4.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "eslint": "^8.51.0",

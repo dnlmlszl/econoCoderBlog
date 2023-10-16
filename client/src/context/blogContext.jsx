@@ -4,6 +4,7 @@ import blogService from '../services/blogs';
 const BlogContext = createContext();
 
 export const BlogProvider = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState({
@@ -54,6 +55,8 @@ export const BlogProvider = ({ children }) => {
         notification,
         setNotification,
         handleLogout,
+        isLoading,
+        setIsLoading,
       }}
     >
       {children}

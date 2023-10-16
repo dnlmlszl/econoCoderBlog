@@ -5,7 +5,7 @@ import Button from './Button';
 import { useGlobalContext } from '../context/blogContext';
 
 const AddBlogForm = ({ blogFormRef }) => {
-  const { setNotification, setBlogs } = useGlobalContext();
+  const { setNotification, setBlogs, user } = useGlobalContext();
   const [newAuthor, setNewAuthor] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
@@ -21,6 +21,10 @@ const AddBlogForm = ({ blogFormRef }) => {
     try {
       const addedBlog = await blogService.createBlog(newBlog);
       if (addedBlog) {
+        addedBlog.user = {
+          username: user.username,
+          name: user.name,
+        };
         setBlogs((prevBlogs) => prevBlogs.concat(addedBlog));
       }
       setNotification({
