@@ -1,4 +1,5 @@
 import axios from 'axios';
+import loginService from './login';
 const baseUrl = '/api/v1/blogs';
 
 let token = null;
@@ -62,5 +63,32 @@ const deleteBlog = async (id) => {
     throw error;
   }
 };
+
+// Refresh Token
+const api = axios.create({
+  baseURL: baseUrl,
+});
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const newToken = await loginService.refreshToken();
+        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        console.error('Error refreshing token:', refreshError);
+        return Promise.reject(error);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default { getAll, createBlog, updateBlog, deleteBlog, setToken };

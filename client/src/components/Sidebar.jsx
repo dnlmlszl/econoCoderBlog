@@ -5,7 +5,7 @@ import {
   AiOutlinePlusCircle,
   AiOutlineUser,
 } from 'react-icons/ai';
-import Button from './Button';
+import SidebarItem from './SidebarItem';
 import { useGlobalContext } from '../context/blogContext';
 
 const Sidebar = ({ blogFormRef }) => {
@@ -15,6 +15,24 @@ const Sidebar = ({ blogFormRef }) => {
   const handleToggleBlogForm = () => {
     blogFormRef.current.toggleVisibility();
   };
+
+  const itemsConfig = [
+    {
+      text: user ? `logged in as ${user?.username}` : null,
+      icon: <AiOutlineUser size={32} />,
+    },
+    {
+      text: 'Add new blog',
+      icon: <AiOutlinePlusCircle size={32} />,
+      onClick: handleToggleBlogForm,
+    },
+    {
+      text: user ? 'Logout' : 'Login',
+      icon: user ? <AiOutlineLogout size={32} /> : <AiOutlineLogin size={32} />,
+      onClick: user ? onLogout : null,
+    },
+  ];
+
   return (
     <aside
       onMouseEnter={() => setIsExpanded(true)}
@@ -24,55 +42,15 @@ const Sidebar = ({ blogFormRef }) => {
       } flex flex-col items-center justify-start`}
     >
       <ul className="flex flex-col items-center space-y-4">
-        <li className="flex items-center justify-between w-full">
-          {isExpanded ? (
-            <p className="text-yellow-600 hover:text-yellow-700 capitalize font-medium text-lg">
-              {user ? `logged in as ${user?.username}` : null}
-            </p>
-          ) : (
-            <div className="inline-block text-yellow-600 rounded-full">
-              <AiOutlineUser size={32} />
-            </div>
-          )}
-        </li>
-        <li className="flex items-center justify-between w-full">
-          {isExpanded ? (
-            <Button
-              onClick={handleToggleBlogForm}
-              className="focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200 bg-yellow-600 hover:bg-yellow-700 text-slate-800"
-            >
-              Add new blog
-            </Button>
-          ) : (
-            <div className="inline-block text-yellow-600 rounded-full">
-              <AiOutlinePlusCircle size={32} />
-            </div>
-          )}
-        </li>
-        <li className="flex items-center justify-between w-full">
-          {user ? (
-            isExpanded ? (
-              <Button
-                onClick={onLogout}
-                className="focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200 bg-yellow-600 hover:bg-yellow-700 text-slate-800"
-              >
-                Logout
-              </Button>
-            ) : (
-              <div className="inline-block text-yellow-600 rounded-full">
-                <AiOutlineLogout size={32} />
-              </div>
-            )
-          ) : isExpanded ? (
-            <Button className="focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200 bg-yellow-600 hover:bg-yellow-700 text-slate-800">
-              Login
-            </Button>
-          ) : (
-            <div className="inline-block text-yellow-600 rounded-full">
-              <AiOutlineLogin size={32} />
-            </div>
-          )}
-        </li>
+        {itemsConfig.map((item, index) => (
+          <SidebarItem
+            key={index}
+            text={item.text}
+            icon={item.icon}
+            onClick={item.onClick}
+            isExpanded={isExpanded}
+          />
+        ))}
       </ul>
     </aside>
   );

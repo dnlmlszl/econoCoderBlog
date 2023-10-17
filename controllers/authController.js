@@ -96,4 +96,40 @@ const registerUser = async (req, res) => {
   });
 };
 
-module.exports = { loginUser, registerUser };
+const refreshToken = async (req, res) => {
+  const refreshToken = req.body.refreshToken;
+
+  if (!refreshToken) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'Refresh token not provided' });
+  }
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+  } catch (err) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Invalid refresh token' });
+  }
+
+  const user = await User.findById(decodedToken.id);
+
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user.id,
+  };
+
+  const newAccessToken = jwt.sign(userForToken, process.env.SECRET, {
+    expiresIn: 60 * 60,
+  });
+
+  res.status(StatusCodes.OK).send({ accessToken: newAccessToken });
+};
+
+module.exports = { loginUser, registerUser, refreshToken };

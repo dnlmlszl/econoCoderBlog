@@ -23,14 +23,15 @@ const Blog = ({ blog }) => {
   useEffect(() => {
     const socket = io();
 
-    socket.on('postLiked', (data) => {
-      if (data.postId === blog.id) {
+    socket.on('blogLiked', (data) => {
+      if (data.blogId === blog.id) {
         setNewLikes(data.likes);
+        console.log(data);
       }
     });
 
     return () => {
-      socket.disconnect();
+      socket.close();
     };
   }, [blog.id]);
 
@@ -39,7 +40,7 @@ const Blog = ({ blog }) => {
 
     const updatedBlog = {
       ...blog,
-      likes: newLikes + 1,
+      likes: newLikes,
     };
 
     setIsLiking(true);
@@ -48,7 +49,7 @@ const Blog = ({ blog }) => {
       const updated = await blogService.updateBlog(blogId, updatedBlog);
       console.log(updated);
 
-      setNewLikes((prevLikes) => prevLikes + 1);
+      setNewLikes((prevLikes) => prevLikes);
       setLikedBy((prevLikedBy) => [...prevLikedBy, blogUser.id]);
     } catch (error) {
       setNotification({

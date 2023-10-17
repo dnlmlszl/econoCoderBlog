@@ -13,7 +13,7 @@ io.use((socket, next) => {
   socket.token = getTokenFrom(socket.request);
   next();
 });
- 
+
 io.on('connection', (socket) => {
   console.log('New client connected');
 
@@ -25,6 +25,7 @@ io.on('connection', (socket) => {
       blog.likes += 1;
       blog.likedBy.push(userId);
       await blog.save();
+      console.log(data);
 
       // Küldj eseményt a frontendnek a likeolásról
       io.emit('blogLiked', { blogId: blogId, likes: blog.likes });

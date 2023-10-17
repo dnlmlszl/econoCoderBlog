@@ -17,6 +17,9 @@ const LoginForm = () => {
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
 
+      // Refresh token
+      window.localStorage.setItem('refreshToken', user.refreshToken);
+
       blogService.setToken(user.token);
       setUser(user);
       setNotification({
