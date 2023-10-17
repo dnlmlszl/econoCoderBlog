@@ -24,6 +24,8 @@ const AddBlogForm = ({ blogFormRef }) => {
         addedBlog.user = {
           username: user.username,
           name: user.name,
+          email: user.email,
+          id: user.id,
         };
         setBlogs((prevBlogs) => prevBlogs.concat(addedBlog));
       }

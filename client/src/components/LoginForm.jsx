@@ -1,19 +1,19 @@
+import { useState } from 'react';
 import { useGlobalContext } from '../context/blogContext';
 import loginService from '../services/login';
 import blogService from '../services/blogs';
 
 import Button from './Button';
-import { useState } from 'react';
 
 const LoginForm = () => {
   const { setUser, setNotification } = useGlobalContext();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const user = await loginService.login({ username, password });
+      const user = await loginService.login({ email, password });
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
 
@@ -26,7 +26,7 @@ const LoginForm = () => {
     } catch (error) {
       setNotification({ message: 'Wrong credentials', type: 'error' });
     }
-    setUsername('');
+    setEmail('');
     setPassword('');
     setTimeout(() => {
       setNotification({ message: null, type: null });
@@ -44,14 +44,14 @@ const LoginForm = () => {
             htmlFor="username"
             className="block text-sm font-medium text-slate-700"
           >
-            Username:
+            Email:
             <input
               type="text"
-              value={username}
+              value={email}
               name="Username"
               id="username"
               required
-              onChange={({ target }) => setUsername(target.value)}
+              onChange={({ target }) => setEmail(target.value)}
               className="mt-1 p-2 w-full border rounded-md shadow-sm"
             />
           </label>

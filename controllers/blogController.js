@@ -8,6 +8,7 @@ const getBlogs = async (req, res) => {
   const blogs = await Blog.find({}).populate('user', {
     username: 1,
     name: 1,
+    id: 1,
   });
   res.status(StatusCodes.OK).json({ blogs, count: blogs.length });
 };
@@ -48,11 +49,16 @@ const createBlog = async (req, res) => {
   });
 
   const savedBlog = await blog.save();
+  const populatedBlog = await Blog.findById(savedBlog.id).populate('user', {
+    username: 1,
+    name: 1,
+    id: 1,
+  });
 
   user.blogs = user.blogs.concat(savedBlog.id);
   await user.save();
 
-  res.status(StatusCodes.CREATED).json(savedBlog);
+  res.status(StatusCodes.CREATED).json(populatedBlog);
 };
 
 const getSingleBlog = async (req, res) => {

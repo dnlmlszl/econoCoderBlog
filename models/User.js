@@ -1,20 +1,39 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     minlength: 3,
-    required: true,
+    maxlength: 20,
+    required: [true, 'Please provide nickname'],
     unique: true,
   },
   name: {
     type: String,
+    minlength: 3,
+    maxlength: 50,
+    required: [true, 'Please provide username'],
   },
   passwordHash: {
     type: String,
     minlength: 3,
-    required: true,
+    required: [true, 'Please provide password'],
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: [true, 'Please provide an email'],
+    validate: {
+      validator: validator.isEmail,
+      message: 'Please provide valid email',
+    },
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'user', 'visitor'],
+    default: 'user',
   },
   blogs: [
     {
