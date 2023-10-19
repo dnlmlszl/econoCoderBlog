@@ -17,14 +17,6 @@ const Togglable = forwardRef((props, refs) => {
 
   return (
     <div>
-      {/* <div className={`${visible ? 'hidden' : 'block'}`}>
-        <Button
-          onClick={toggleVisibility}
-          className=" my-3 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
-        >
-          {props.buttonLabel}
-        </Button>
-      </div> */}
       <div className={`${visible ? 'block' : 'hidden'}`}>
         {props.children}
         <Button

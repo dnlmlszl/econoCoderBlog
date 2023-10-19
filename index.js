@@ -32,6 +32,29 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('deleteBlog', async (blogId) => {
+    const blog = await Blog.findById(blogId);
+    if (blog) {
+      await blog.deleteOne();
+      // Küldj eseményt a frontendnek a blog törléséről
+      io.emit('blogDeleted', blogId);
+    }
+  });
+
+  socket.on('blogCreated', async (blogData) => {
+    const newBlog = new Blog({
+      title: blogData.title,
+      author: blogData.author,
+      url: blogData.url,
+      likes: blogData.likes || 0,
+      user: blogData.user,
+    });
+    if (newBlog) {
+      const savedBlog = await newBlog.save();
+      io.emit('blogCreated', savedBlog);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });

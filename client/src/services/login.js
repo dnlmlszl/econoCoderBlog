@@ -3,17 +3,37 @@ const baseUrl = '/api/v1/auth';
 
 const login = async (credentials) => {
   const response = await axios.post(`${baseUrl}/login`, credentials);
+
+  // Tároljuk el az új tokeneket a localStorage-ban
+  window.localStorage.setItem('refreshToken', response.data.refreshToken);
+  window.localStorage.setItem(
+    'loggedBlogappUser',
+    JSON.stringify({
+      token: response.data.token,
+      username: response.data.username,
+      name: response.data.name,
+      email: response.data.email,
+      id: response.data.id,
+    })
+  );
+
+  return response.data;
+};
+
+const register = async (credentials) => {
+  const response = await axios.post(`${baseUrl}/register`, credentials);
+
   return response.data;
 };
 
 // Refresh Token
 const refreshToken = async () => {
-  const refreshToken = window.localStorage.getItem('refreshToken'); // Feltételezve, hogy a refresh token-t így tárolod
-  if (!refreshToken) {
+  const refreshTokenStored = window.localStorage.getItem('refreshToken'); // Feltételezve, hogy a refresh token-t így tárolod
+  if (!refreshTokenStored) {
     throw new Error('No refresh token found');
   }
   const response = await axios.post(`${baseUrl}/refresh-token`, {
-    refreshToken,
+    refreshToken: refreshTokenStored,
   });
   const newAccessToken = response.data.accessToken;
 
@@ -28,4 +48,4 @@ const refreshToken = async () => {
   return newAccessToken;
 };
 
-export default { login, refreshToken };
+export default { login, register, refreshToken };

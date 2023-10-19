@@ -36,7 +36,7 @@ const LoginForm = () => {
     }, 5000);
   };
   return (
-    <div className="max-w-md w-2/4 mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
+    <article className="max-w-md w-2/4 mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-center capitalize text-2xl text-slate-500 my-3">
         login
       </h2>
@@ -44,7 +44,7 @@ const LoginForm = () => {
       <form onSubmit={handleLogin}>
         <div className="mb-4">
           <label
-            htmlFor="username"
+            htmlFor="Username"
             className="block text-sm font-medium text-slate-700"
           >
             Email:
@@ -52,7 +52,7 @@ const LoginForm = () => {
               type="text"
               value={email}
               name="Username"
-              id="username"
+              id="Username"
               required
               onChange={({ target }) => setEmail(target.value)}
               className="mt-1 p-2 w-full border rounded-md shadow-sm"
@@ -61,7 +61,7 @@ const LoginForm = () => {
         </div>
         <div className="mb-4">
           <label
-            htmlFor="password"
+            htmlFor="Password"
             className="block text-sm font-medium text-slate-700"
           >
             Password:
@@ -69,7 +69,7 @@ const LoginForm = () => {
               type="password"
               value={password}
               name="Password"
-              id="password"
+              id="Password"
               required
               onChange={({ target }) => setPassword(target.value)}
               className="mt-1 p-2 w-full border rounded-md shadow-sm"
@@ -85,7 +85,7 @@ const LoginForm = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </article>
   );
 };
 

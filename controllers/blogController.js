@@ -15,6 +15,7 @@ const getBlogs = async (req, res) => {
 
 const createBlog = async (req, res) => {
   const body = req.body;
+  const io = getIo();
 
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
@@ -55,6 +56,8 @@ const createBlog = async (req, res) => {
     id: 1,
   });
 
+  io.emit('blogCreated', { newBlog: populatedBlog });
+
   user.blogs = user.blogs.concat(savedBlog.id);
   await user.save();
 
@@ -63,7 +66,16 @@ const createBlog = async (req, res) => {
 
 const getSingleBlog = async (req, res) => {
   const { id } = req.params;
-  const blog = await Blog.findOne({ id });
+
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Invalid token' });
+  }
+
+  const blog = await Blog.findById(id);
 
   if (!blog) {
     return res.status(StatusCodes.NOT_FOUND).json({ error: 'Blog not found.' });
@@ -74,6 +86,7 @@ const getSingleBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
   const { id: blogId } = req.params;
+  const io = getIo();
   const blog = await Blog.findById(blogId);
   if (!blog) {
     return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Blog not found.' });
@@ -95,6 +108,7 @@ const deleteBlog = async (req, res) => {
   }
 
   await blog.deleteOne();
+  io.emit('blogDeleted', { blogId: blogId });
 
   const userId = blog.user;
   const user = await User.findById(userId);

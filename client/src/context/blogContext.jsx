@@ -16,7 +16,11 @@ export const BlogProvider = ({ children }) => {
     const fetchBlogs = async () => {
       try {
         const fetchedBlogs = await blogService.getAll();
-        setBlogs(fetchedBlogs);
+        if (Array.isArray(fetchedBlogs)) {
+          setBlogs(fetchedBlogs);
+        } else {
+          console.error('Error: fetchedBlogs is not an array');
+        }
       } catch (error) {
         setNotification({
           message: `Error: ${error.response.data.error}`,
@@ -41,6 +45,7 @@ export const BlogProvider = ({ children }) => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser');
+    window.localStorage.removeItem('refreshToken');
     blogService.setToken(null);
     setUser(null);
   };

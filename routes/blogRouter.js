@@ -13,7 +13,7 @@ const {
 router.route('/').post(userExtractor, createBlog).get(getBlogs);
 router
   .route('/:id')
-  .get(getSingleBlog)
+  .get(userExtractor, getSingleBlog)
   .delete(userExtractor, deleteBlog)
   .patch(userExtractor, updateBlog);
 

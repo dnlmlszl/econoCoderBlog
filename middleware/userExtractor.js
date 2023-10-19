@@ -12,7 +12,20 @@ const userExtractor = async (req, res, next) => {
       .json({ error: 'Token missing' });
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET);
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET);
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ error: 'Token expired' });
+    }
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Token invalid' });
+  }
 
   if (!decodedToken.id) {
     return res

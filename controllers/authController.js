@@ -32,8 +32,17 @@ const loginUser = async (req, res) => {
     expiresIn: 60 * 60,
   });
 
+  const refreshToken = jwt.sign(
+    userForToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: '7d', // 7 days
+    }
+  );
+
   res.status(StatusCodes.OK).send({
     token,
+    refreshToken,
     username: user.username,
     name: user.name,
     email: user.email,
@@ -87,12 +96,33 @@ const registerUser = async (req, res) => {
 
   const savedUser = await user.save();
 
+  //
+  const userForToken = {
+    username: savedUser.username,
+    id: savedUser.id,
+  };
+
+  const token = jwt.sign(userForToken, process.env.SECRET, {
+    expiresIn: 60 * 60,
+  });
+
+  const refreshToken = jwt.sign(
+    userForToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: '7d', // 7 days
+    }
+  );
+  //
+
   res.status(StatusCodes.CREATED).json({
     id: savedUser.id,
     username: savedUser.username,
     name: savedUser.name,
     email: savedUser.email,
     role: savedUser.role,
+    token,
+    refreshToken,
   });
 };
 
@@ -111,7 +141,7 @@ const refreshToken = async (req, res) => {
   } catch (err) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
-      .json({ error: 'Invalid refresh token' });
+      .json({ error: 'Refresh token expired or invalid' });
   }
 
   const user = await User.findById(decodedToken.id);
