@@ -5,6 +5,7 @@ const http = require('http');
 const { init } = require('./utils/socket');
 const { getTokenFrom } = require('./utils/getTokenFrom');
 const Blog = require('./models/Blog');
+const Comment = require('./models/Comment');
 
 const server = http.createServer(app);
 const io = init(server);
@@ -52,6 +53,28 @@ io.on('connection', (socket) => {
     if (newBlog) {
       const savedBlog = await newBlog.save();
       io.emit('blogCreated', savedBlog);
+    }
+  });
+
+  socket.on('createComment', async (commentData) => {
+    const newComment = new Comment({
+      content: commentData.content,
+      blog: commentData.blogId,
+      user: commentData.user,
+    });
+
+    if (newComment) {
+      const savedComment = await newComment.save();
+      io.emmit('commentCreated', savedComment);
+    }
+  });
+
+  socket.on('updateComment', async (commentData) => {
+    const comment = await Comment.findById(commentData.id);
+    if (comment) {
+      comment.content = commentData.content;
+      const updatedComment = await comment.save();
+      io.emit('commentUpdated', updatedComment);
     }
   });
 

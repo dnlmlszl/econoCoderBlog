@@ -7,13 +7,12 @@ const CommentSchema = new mongoose.Schema(
       required: true,
       minlength: 1,
     },
+    user: {
+      type: String,
+    },
     blog: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Blog',
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
     },
   },
   { timestamps: true }

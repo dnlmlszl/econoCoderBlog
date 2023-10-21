@@ -23,6 +23,13 @@ const deleteBlog = async (id) => {
   return apiCall('delete', `${baseUrl}/${id}`);
 };
 
+const createComment = async (blogId, commentContent) => {
+  const commentData = {
+    content: commentContent,
+  };
+  return apiCall('post', `${baseUrl}/${blogId}/comments`, commentData);
+};
+
 // const setToken = (newToken) => {
 //   let user = JSON.parse(localStorage.getItem('loggedBlogappUser'));
 //   if (user) {
@@ -31,4 +38,4 @@ const deleteBlog = async (id) => {
 //   }
 // };
 
-export default { getAll, createBlog, updateBlog, deleteBlog };
+export default { getAll, createBlog, updateBlog, deleteBlog, createComment };

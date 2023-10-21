@@ -4,6 +4,7 @@ import blogService from '../services/blogs';
 import { FaThumbsUp, FaTrashAlt } from 'react-icons/fa';
 import { useGlobalContext } from '../context/blogContext';
 import io from 'socket.io-client';
+import Comments from './Comments';
 
 const Blog = ({ blog }) => {
   const {
@@ -136,10 +137,11 @@ const Blog = ({ blog }) => {
               </Button>
             )}
           </div>
+          <Comments blog={blog} />
         </>
       )}
       <Button
-        className="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200"
+        className="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200 mt-4"
         onClick={() => setOpenBlog((op) => !op)}
       >
         {openBlog ? 'Close' : 'View details'}

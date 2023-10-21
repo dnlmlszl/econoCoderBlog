@@ -20,7 +20,6 @@ export const BlogProvider = ({ children }) => {
   useEffect(() => {
     const fetchBlogs = async () => {
       setIsLoading(true);
-
       try {
         const fetchedBlogs = await blogService.getAll();
         if (fetchedBlogs) {

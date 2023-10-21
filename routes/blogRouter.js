@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const userExtractor = require('../middleware/userExtractor');
-const {
-  getComments,
-  createComment,
-} = require('../controllers/commentController');
 
 const {
   getBlogs,
@@ -14,6 +10,11 @@ const {
   updateBlog,
 } = require('../controllers/blogController');
 
+const {
+  getComments,
+  createComment,
+} = require('../controllers/commentController');
+
 router.route('/').post(userExtractor, createBlog).get(getBlogs);
 router
   .route('/:id')
@@ -22,8 +23,8 @@ router
   .patch(userExtractor, updateBlog);
 
 router
-  .route(':id/comments')
+  .route('/:id/comments')
   .post(userExtractor, createComment)
-  .get(userExtractor, getComments);
+  .get(getComments);
 
 module.exports = router;

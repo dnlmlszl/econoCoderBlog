@@ -5,12 +5,10 @@ const { StatusCodes } = require('http-status-codes');
 const { getIo } = require('../utils/socket');
 
 const getBlogs = async (req, res) => {
-  const blogs = await Blog.find({}).populate('user', {
-    username: 1,
-    name: 1,
-    id: 1,
-  });
-  res.status(StatusCodes.OK).json({ blogs, count: blogs.length });
+  const blogs = await Blog.find({})
+    .populate('comments')
+    .populate('user', { username: 1, name: 1 });
+  res.status(StatusCodes.OK).json({ blogs, count: blogs.length }); 
 };
 
 const createBlog = async (req, res) => {
@@ -75,12 +73,14 @@ const getSingleBlog = async (req, res) => {
       .json({ error: 'Invalid token' });
   }
 
-  const blog = await Blog.findById(id);
+  const blog = await Blog.findById(id)
+    .populate('comments')
+    .populate('user', { username: 1 });
 
   if (!blog) {
     return res.status(StatusCodes.NOT_FOUND).json({ error: 'Blog not found.' });
   }
-
+  console.log(blog);
   res.status(StatusCodes.OK).json(blog);
 };
 
