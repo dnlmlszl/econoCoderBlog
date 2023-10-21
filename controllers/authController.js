@@ -40,8 +40,14 @@ const loginUser = async (req, res) => {
     }
   );
 
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600000,
+    sameSite: 'lax',
+  });
+
   res.status(StatusCodes.OK).send({
-    token,
     refreshToken,
     username: user.username,
     name: user.name,
@@ -114,6 +120,12 @@ const registerUser = async (req, res) => {
     }
   );
   //
+  res.cookie('accessToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600000,
+    sameSite: 'lax',
+  });
 
   res.status(StatusCodes.CREATED).json({
     id: savedUser.id,
@@ -121,9 +133,14 @@ const registerUser = async (req, res) => {
     name: savedUser.name,
     email: savedUser.email,
     role: savedUser.role,
-    token,
     refreshToken,
   });
+};
+
+const logoutUser = async (req, res) => {
+  res.cookie('accessToken', '', { expires: new Date(0) });
+
+  res.status(StatusCodes.OK).json({ message: 'Logged out successfully' });
 };
 
 const refreshToken = async (req, res) => {
@@ -159,7 +176,14 @@ const refreshToken = async (req, res) => {
     expiresIn: 60 * 60,
   });
 
-  res.status(StatusCodes.OK).send({ accessToken: newAccessToken });
+  res.cookie('accessToken', newAccessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600000,
+    sameSite: 'lax',
+  });
+
+  res.status(StatusCodes.OK).end();
 };
 
-module.exports = { loginUser, registerUser, refreshToken };
+module.exports = { loginUser, registerUser, logoutUser, refreshToken };

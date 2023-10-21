@@ -1,14 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import blogService from '../services/blogs';
 
 import Button from './Button';
 import { useGlobalContext } from '../context/blogContext';
+import io from 'socket.io-client';
 
 const AddBlogForm = ({ blogFormRef }) => {
-  const { setNotification, setBlogs, user } = useGlobalContext();
+  const { setNotification, setBlogs, isLoading, setIsLoading } =
+    useGlobalContext();
   const [newAuthor, setNewAuthor] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
+
+  useEffect(() => {
+    const socket = io();
+
+    socket.on('blogCreated', (data) => {
+      if (data.newBlog) {
+        setBlogs((prev) => prev.concat(data.newBlog));
+        console.log(data);
+      }
+    });
+
+    return () => {
+      socket.close();
+    };
+  }, [setBlogs]);
 
   const addBlog = async (e) => {
     e.preventDefault();
@@ -18,17 +35,10 @@ const AddBlogForm = ({ blogFormRef }) => {
       author: newAuthor,
       url: newUrl,
     };
+    setIsLoading(true);
     try {
-      const addedBlog = await blogService.createBlog(newBlog);
-      if (addedBlog) {
-        addedBlog.user = {
-          username: user.username,
-          name: user.name,
-          email: user.email,
-          id: user.id,
-        };
-        setBlogs((prevBlogs) => prevBlogs.concat(addedBlog));
-      }
+      await blogService.createBlog(newBlog);
+
       setNotification({
         message: 'Blog successfully created!',
         type: 'success',
@@ -39,15 +49,18 @@ const AddBlogForm = ({ blogFormRef }) => {
         message: `Error: ${error.response.data.error}`,
         type: 'error',
       });
+    } finally {
+      setIsLoading(false);
+      setNewAuthor('');
+      setNewTitle('');
+      setNewUrl('');
+      blogFormRef.current.toggleVisibility();
+      setTimeout(() => {
+        setNotification({ message: null, type: null });
+      }, 5000);
     }
-    setNewAuthor('');
-    setNewTitle('');
-    setNewUrl('');
-    blogFormRef.current.toggleVisibility();
-    setTimeout(() => {
-      setNotification({ message: null, type: null });
-    }, 5000);
   };
+
   return (
     <div className="md:w-4/5 lg:w-3/4 xl:w-2/3 2xl:w-1/2 mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-center capitalize text-2xl text-slate-500 my-3">
@@ -107,7 +120,7 @@ const AddBlogForm = ({ blogFormRef }) => {
             type="submit"
             className="my-3 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
           >
-            Submit
+            {isLoading ? <div className="loading-sm" /> : 'Submit'}
           </Button>
         </div>
       </form>

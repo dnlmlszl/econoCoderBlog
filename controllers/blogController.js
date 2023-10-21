@@ -17,7 +17,7 @@ const createBlog = async (req, res) => {
   const body = req.body;
   const io = getIo();
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  const decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
 
   if (!decodedToken.id) {
     return res
@@ -67,7 +67,7 @@ const createBlog = async (req, res) => {
 const getSingleBlog = async (req, res) => {
   const { id } = req.params;
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  const decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
 
   if (!decodedToken.id) {
     return res
@@ -92,10 +92,9 @@ const deleteBlog = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Blog not found.' });
   }
 
-  const token = req.token;
-  const decodedToken = jwt.verify(token, process.env.SECRET);
+  const decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
 
-  if (!token || !decodedToken.id) {
+  if (!decodedToken.id) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: 'Token missing or invalid' });

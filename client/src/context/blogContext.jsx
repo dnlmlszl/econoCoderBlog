@@ -1,5 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import blogService from '../services/blogs';
+import loginService from '../services/login';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 const BlogContext = createContext();
 
@@ -7,6 +11,7 @@ export const BlogProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [notification, setNotification] = useState({
     message: null,
     type: null,
@@ -14,9 +19,11 @@ export const BlogProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      setIsLoading(true);
+
       try {
         const fetchedBlogs = await blogService.getAll();
-        if (Array.isArray(fetchedBlogs)) {
+        if (fetchedBlogs) {
           setBlogs(fetchedBlogs);
         } else {
           console.error('Error: fetchedBlogs is not an array');
@@ -26,27 +33,47 @@ export const BlogProvider = ({ children }) => {
           message: `Error: ${error.response.data.error}`,
           type: 'error',
         });
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => {
+          setNotification({ message: null, type: null });
+        }, 5000);
       }
-      setTimeout(() => {
-        setNotification({ message: null, type: null });
-      }, 5000);
     };
     fetchBlogs();
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/api/v1/users/me', {
+          withCredentials: true,
+        });
+        setUser(response.data);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          try {
+            await loginService.refreshToken();
+            fetchUserData();
+          } catch (refreshError) {
+            console.error('Error fetching user data: ', error);
+          }
+        } else {
+          console.error('Error fetching user data: ', error);
+        }
+      }
+    };
+    const refreshTokenStored = window.localStorage.getItem('refreshToken');
+    if (refreshTokenStored) {
+      fetchUserData();
     }
   }, []);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser');
+  const handleLogout = async () => {
     window.localStorage.removeItem('refreshToken');
-    blogService.setToken(null);
+
+    await loginService.logout();
+
     setUser(null);
   };
 
@@ -62,6 +89,8 @@ export const BlogProvider = ({ children }) => {
         handleLogout,
         isLoading,
         setIsLoading,
+        isLoggedIn,
+        setIsLoggedIn,
       }}
     >
       {children}

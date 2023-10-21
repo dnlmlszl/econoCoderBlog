@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import { useGlobalContext } from './context/blogContext';
 import RegisterForm from './components/RegisterForm';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   const { user } = useGlobalContext();
@@ -42,6 +43,7 @@ function App() {
             <BlogList />
           </section>
         )}
+        <CookieBanner />
       </main>
     </>
   );

@@ -30,10 +30,18 @@ const Blog = ({ blog }) => {
       }
     });
 
+    socket.on('blogDeleted', (data) => {
+      if (data.blogId === blog.id) {
+        // Törölje a blogot a frontend listából
+        const updatedBlogs = blogs.filter((b) => b.id !== data.blogId);
+        setBlogs(updatedBlogs);
+      }
+    });
+
     return () => {
       socket.close();
     };
-  }, [blog.id]);
+  }, [blog.id, blogs, setBlogs]);
 
   const handleLike = async (blogId) => {
     if (likedBy.includes(blogUser.id)) return;

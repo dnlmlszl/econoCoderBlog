@@ -19,9 +19,8 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginService.register(credentials);
-      const user = response;
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
+      const user = await loginService.register(credentials);
+
       window.localStorage.setItem('refreshToken', user.refreshToken);
       setUser(user);
 

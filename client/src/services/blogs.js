@@ -23,12 +23,12 @@ const deleteBlog = async (id) => {
   return apiCall('delete', `${baseUrl}/${id}`);
 };
 
-const setToken = (newToken) => {
-  let user = JSON.parse(localStorage.getItem('loggedBlogappUser'));
-  if (user) {
-    user.token = newToken;
-    localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
-  }
-};
+// const setToken = (newToken) => {
+//   let user = JSON.parse(localStorage.getItem('loggedBlogappUser'));
+//   if (user) {
+//     user.token = newToken;
+//     localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
+//   }
+// };
 
-export default { getAll, createBlog, updateBlog, deleteBlog, setToken };
+export default { getAll, createBlog, updateBlog, deleteBlog };

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useGlobalContext } from '../context/blogContext';
 import loginService from '../services/login';
-import blogService from '../services/blogs';
 
 import Button from './Button';
 
 const LoginForm = () => {
-  const { setUser, setNotification } = useGlobalContext();
+  const { setUser, setNotification, setIsLoggedIn } = useGlobalContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,13 +14,11 @@ const LoginForm = () => {
     try {
       const user = await loginService.login({ email, password });
 
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
-
       // Refresh token
       window.localStorage.setItem('refreshToken', user.refreshToken);
 
-      blogService.setToken(user.token);
       setUser(user);
+      setIsLoggedIn(true);
       setNotification({
         message: `User ${user.username} login success`,
         type: 'success',
