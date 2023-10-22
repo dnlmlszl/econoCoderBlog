@@ -76,6 +76,7 @@ const LoginForm = () => {
         <div>
           <Button
             type="submit"
+            id="login-button"
             className="w-full mt-3 p-2 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
           >
             login
