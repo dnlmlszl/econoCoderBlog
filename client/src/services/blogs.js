@@ -11,6 +11,10 @@ const getAll = async () => {
   }
 };
 
+const getBlog = async (id) => {
+  return apiCall('get', `${baseUrl}/${id}`);
+};
+
 const createBlog = async (newObject) => {
   return apiCall('post', baseUrl, newObject);
 };
@@ -38,4 +42,11 @@ const createComment = async (blogId, commentContent) => {
 //   }
 // };
 
-export default { getAll, createBlog, updateBlog, deleteBlog, createComment };
+export default {
+  getAll,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+  createComment,
+  getBlog,
+};

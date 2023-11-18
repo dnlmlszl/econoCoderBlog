@@ -38,9 +38,9 @@ const CommentsForm = ({ blogId }) => {
         <div className="mb-4">
           <label
             htmlFor="content"
-            className="block text-center capitalize text-2xl text-slate-500 my-3"
+            className="block text-center capitalize font-medium text-dynamich3 text-neutral-700 my-3"
           >
-            say your words
+            share your thoughts
           </label>
           <textarea
             value={newContent}
@@ -55,7 +55,7 @@ const CommentsForm = ({ blogId }) => {
         </div>
         <Button
           type="submit"
-          className="my-3 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
+          className="my-3 bg-neutral-950 text-white text-dynamicbtn rounded hover:bg-neutral-900 focus:outline-none focus:border-neutral-800 focus:ring focus:ring-neutral-200"
         >
           {isCommenting ? <div className="loading-sm" /> : 'Submit'}
         </Button>

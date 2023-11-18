@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../context/blogContext';
 import loginService from '../services/login';
 
 import Button from './Button';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const { setUser, setNotification, setIsLoggedIn } = useGlobalContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,6 +22,7 @@ const LoginForm = () => {
 
       setUser(user);
       setIsLoggedIn(true);
+      navigate('/');
       setNotification({
         message: `User ${user.username} login success`,
         type: 'success',
@@ -33,8 +37,8 @@ const LoginForm = () => {
     }, 5000);
   };
   return (
-    <article className="max-w-md w-2/4 mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-center capitalize text-2xl text-slate-500 my-3">
+    <article className="max-w-md mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-center capitalize text-dynamich2 text-neutral-950 my-3">
         login
       </h2>
 
@@ -42,7 +46,7 @@ const LoginForm = () => {
         <div className="mb-4">
           <label
             htmlFor="Username"
-            className="block text-sm font-medium text-slate-700"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
           >
             Email:
             <input
@@ -52,14 +56,14 @@ const LoginForm = () => {
               id="Username"
               required
               onChange={({ target }) => setEmail(target.value)}
-              className="mt-1 p-2 w-full border rounded-md shadow-sm"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </label>
         </div>
         <div className="mb-4">
           <label
             htmlFor="Password"
-            className="block text-sm font-medium text-slate-700"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
           >
             Password:
             <input
@@ -69,7 +73,7 @@ const LoginForm = () => {
               id="Password"
               required
               onChange={({ target }) => setPassword(target.value)}
-              className="mt-1 p-2 w-full border rounded-md shadow-sm"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </label>
         </div>
@@ -77,11 +81,18 @@ const LoginForm = () => {
           <Button
             type="submit"
             id="login-button"
-            className="w-full mt-3 p-2 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
+            className="w-full mt-3 p-2 bg-neutral-950 text-white rounded hover:bg-neutral-900 focus:outline-none focus:border-neutral-800 focus:ring focus:ring-slate-200"
           >
             login
           </Button>
         </div>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Not a member yet?
+          <Link to="/register" className="text-gray-500 hover:text-gray-600">
+            {' '}
+            Register!
+          </Link>
+        </p>
       </form>
     </article>
   );

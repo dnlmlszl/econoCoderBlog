@@ -3,12 +3,41 @@
 @tailwind utilities;
 
 @keyframes spinner {
-  to {
-    transform: rotate(360deg);
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
 .loading {
+  width: 8rem;
+  height: 8rem;
+  border: 5px solid #e5e7eb;
+  border-top-color: #374151;
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loading-old {
+  width: 6rem;
+  height: 6rem;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spinner 0.6s linear infinite;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.loading-gray {
   width: 6rem;
   height: 6rem;
   border: 5px solid #374151;

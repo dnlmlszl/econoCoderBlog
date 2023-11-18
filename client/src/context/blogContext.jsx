@@ -12,6 +12,8 @@ export const BlogProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notification, setNotification] = useState({
     message: null,
     type: null,
@@ -45,11 +47,13 @@ export const BlogProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        setUserLoading(true);
         const response = await axios.get('/api/v1/users/me', {
           withCredentials: true,
         });
         setUser(response.data);
       } catch (error) {
+        setUserLoading(false);
         if (error.response && error.response.status === 401) {
           try {
             await loginService.refreshToken();
@@ -60,11 +64,15 @@ export const BlogProvider = ({ children }) => {
         } else {
           console.error('Error fetching user data: ', error);
         }
+      } finally {
+        setUserLoading(false);
       }
     };
     const refreshTokenStored = window.localStorage.getItem('refreshToken');
     if (refreshTokenStored) {
       fetchUserData();
+    } else {
+      setUserLoading(false);
     }
   }, []);
 
@@ -88,8 +96,11 @@ export const BlogProvider = ({ children }) => {
         handleLogout,
         isLoading,
         setIsLoading,
+        userLoading,
         isLoggedIn,
         setIsLoggedIn,
+        isSidebarOpen,
+        setIsSidebarOpen,
       }}
     >
       {children}

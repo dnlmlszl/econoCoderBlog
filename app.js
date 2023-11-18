@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 require('express-async-errors');
 const app = express();
@@ -29,6 +30,10 @@ app.use('/api/v1/blogs', blogRouter);
 app.use('/api/v1/comments', commentRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 app.use(middleware.unknownEndpoint);
 app.use(errorHandlingMiddleware);

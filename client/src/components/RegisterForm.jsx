@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import loginService from '../services/login';
 import { useGlobalContext } from '../context/blogContext';
+import { Link } from 'react-router-dom';
 
 const RegisterForm = () => {
   const { setUser, setNotification } = useGlobalContext();
@@ -39,16 +40,16 @@ const RegisterForm = () => {
   };
 
   return (
-    <article className="max-w-md w-2/4 mx-auto m-8 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-center capitalize text-2xl text-slate-500 my-3">
+    <article className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-center capitalize text-dynamich2 text-neutral-950 mb-6">
         register
       </h2>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="mb-4">
           <label
             htmlFor="username"
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
           >
             Username
           </label>
@@ -59,18 +60,18 @@ const RegisterForm = () => {
             value={credentials.username}
             onChange={handleChange}
             required
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
         </div>
         <div className="mb-4">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
             htmlFor="name"
           >
             Name
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
             id="name"
             type="text"
             name="name"
@@ -81,13 +82,13 @@ const RegisterForm = () => {
         </div>
         <div className="mb-4">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
             htmlFor="email"
           >
             Email
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
             id="email"
             type="email"
             name="email"
@@ -98,13 +99,13 @@ const RegisterForm = () => {
         </div>
         <div className="mb-6">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm text-start font-bold mb-2"
             htmlFor="password"
           >
             Password
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
             id="password"
             type="password"
             name="password"
@@ -115,12 +116,19 @@ const RegisterForm = () => {
         </div>
         <div className="flex items-center justify-between">
           <button
-            className="w-full mt-3 p-2 bg-slate-500 text-white rounded hover:bg-slate-600 focus:outline-none focus:border-slate-800 focus:ring focus:ring-slate-200"
+            className="w-full mt-3 p-2 bg-neutral-950 text-white rounded hover:bg-neutral-900 focus:outline-none focus:border-neutral-800 focus:ring focus:ring-slate-200"
             type="submit"
           >
             Register user
           </button>
         </div>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already a member?
+          <Link to="/login" className="text-gray-500 hover:text-gray-600">
+            {' '}
+            Login!
+          </Link>
+        </p>
       </form>
     </article>
   );

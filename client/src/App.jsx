@@ -1,51 +1,90 @@
-import { useRef, useState } from 'react';
-import LoginForm from './components/LoginForm';
-import AddBlogForm from './components/AddBlogForm';
-import BlogList from './components/Bloglist';
-import Notification from './components/Notification';
-import Togglable from './components/Toggleable';
-import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import { useGlobalContext } from './context/blogContext';
-import RegisterForm from './components/RegisterForm';
-import CookieBanner from './components/CookieBanner';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+import { loader as singleBlogLoader } from './pages/SingleBlogPage';
+import { loader as blogListLoader } from './pages/Landing';
+import { loader as usersLoader } from './pages/UsersPage';
+
+import {
+  HomeLayout,
+  About,
+  Error,
+  SinglePageError,
+  Landing,
+  SingleBlogPage,
+  NewBlog,
+  LoginPage,
+  RegisterPage,
+  UsersPage,
+  SingleUser,
+} from './pages';
+import PrivateRoute from './pages/PrivateRoute';
 
 function App() {
-  const { user } = useGlobalContext();
-  const [showLoginForm, setShowLoginForm] = useState(true);
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 5 * 1000,
+      },
+    },
+  });
 
-  const blogFormRef = useRef();
-  const registerFormRef = useRef();
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <HomeLayout />,
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: <Landing />,
+          loader: blogListLoader(queryClient),
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'about',
+          element: <About />,
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'blog/new',
+          element: (
+            <PrivateRoute>
+              <NewBlog />
+            </PrivateRoute>
+          ),
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'blog/:id',
+          element: <SingleBlogPage />,
+          loader: singleBlogLoader(queryClient),
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'users',
+          element: <UsersPage />,
+          loader: usersLoader(queryClient),
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'users/:id',
+          element: <SingleUser />,
+          // loader: usersLoader(queryClient),
+          errorElement: <SinglePageError />,
+        },
+      ],
+    },
+    { path: 'login', element: <LoginPage />, errorElement: <Error /> },
+    { path: 'register', element: <RegisterPage />, errorElement: <Error /> },
+  ]);
 
   return (
-    <>
-      <Navbar
-        buttonLabel="register"
-        registerFormRef={registerFormRef}
-        setShowLoginForm={setShowLoginForm}
-        showLoginForm={showLoginForm}
-      />
-      <main className="min-h-screen flex flex-col justify-start pt-[120px]">
-        <Notification />
-        <Sidebar blogFormRef={blogFormRef} />
-        {user === null ? (
-          <section className="p-6 sm:p-12 mb-4 flex flex-col">
-            {showLoginForm ? <LoginForm /> : null}
-            <Togglable ref={registerFormRef}>
-              <RegisterForm />
-            </Togglable>
-          </section>
-        ) : (
-          <section className="p-6 sm:p-12 mb-4 flex flex-col">
-            <Togglable buttonLabel="add new blog" ref={blogFormRef}>
-              <AddBlogForm blogFormRef={blogFormRef} />
-            </Togglable>
-            <BlogList />
-          </section>
-        )}
-        <CookieBanner />
-      </main>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

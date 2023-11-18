@@ -1,18 +1,28 @@
-import Button from './Button';
+import { Link } from 'react-router-dom';
+import { useGlobalContext } from '../context/blogContext';
 
-const SidebarItem = ({ icon, text, onClick, isExpanded }) => (
-  <li className="flex items-center justify-between w-full">
-    {isExpanded ? (
-      <Button
-        onClick={onClick}
-        className="focus:outline-none focus:border-yellow-700 focus:ring focus:ring-yellow-200 bg-slate-800 hover:bg-slate-700 text-yellow-600 font-bold"
+const SidebarItem = ({ item }) => {
+  const { setIsSidebarOpen } = useGlobalContext();
+
+  const handleClick = () => {
+    if (item.action) {
+      item.action();
+    }
+    setIsSidebarOpen(false);
+  };
+
+  return (
+    <li className="flex items-center space-x-2">
+      <Link
+        to={item.path}
+        onClick={handleClick}
+        className="text-white flex items-center px-4 py-2 hover:bg-gray-700 rounded"
       >
-        {text}
-      </Button>
-    ) : (
-      <div className="inline-block text-yellow-600 rounded-full">{icon}</div>
-    )}
-  </li>
-);
+        {item.icon}
+        <span className="ml-2">{item.name}</span>
+      </Link>
+    </li>
+  );
+};
 
 export default SidebarItem;

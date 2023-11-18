@@ -1,5 +1,6 @@
 const Blog = require('../models/Blog');
 const User = require('../models/User');
+const Comment = require('../models/Comment');
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 const { getIo } = require('../utils/socket');
@@ -8,7 +9,8 @@ const getBlogs = async (req, res) => {
   const blogs = await Blog.find({})
     .populate('comments')
     .populate('user', { username: 1, name: 1 });
-  res.status(StatusCodes.OK).json({ blogs, count: blogs.length }); 
+
+  res.status(StatusCodes.OK).json({ blogs, count: blogs.length });
 };
 
 const createBlog = async (req, res) => {
@@ -105,14 +107,28 @@ const deleteBlog = async (req, res) => {
       .status(StatusCodes.FORBIDDEN)
       .json({ error: 'Only the creator has the access to delete a blog' });
   }
+  const commentsToDelete = await Comment.find({ blog: blogId });
 
-  await blog.deleteOne();
-  io.emit('blogDeleted', { blogId: blogId });
+  await Comment.deleteMany({ blog: blogId });
 
   const userId = blog.user;
   const user = await User.findById(userId);
-  user.blogs = user.blogs.filter((b) => b.toString() !== blogId);
-  await user.save();
+
+  if (user) {
+    const commentIdsToDelete = commentsToDelete.map((comment) =>
+      comment._id.toString()
+    );
+    user.comments = user.comments.filter(
+      (commentId) => !commentIdsToDelete.includes(commentId.toString())
+    );
+
+    user.blogs = user.blogs.filter((b) => b.toString() !== blogId);
+
+    await user.save();
+  }
+
+  await blog.deleteOne();
+  io.emit('blogDeleted', { blogId: blogId });
 
   res.status(StatusCodes.NO_CONTENT).end();
 };

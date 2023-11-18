@@ -3,12 +3,15 @@ const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find({}).populate('blogs', {
-    title: 1,
-    author: 1,
-    url: 1,
-    likes: 1,
-  });
+  const users = await User.find({})
+    .populate('blogs', {
+      title: 1,
+      author: 1,
+      url: 1,
+      likes: 1,
+      role: 1,
+    })
+    .populate('comments');
 
   res.status(StatusCodes.OK).json(users);
 };
@@ -39,6 +42,7 @@ const getMe = async (req, res) => {
     username: user.username,
     name: user.name,
     email: user.email,
+    role: user.role,
     id: user.id,
   });
 };

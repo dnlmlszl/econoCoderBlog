@@ -26,14 +26,12 @@ export const apiCall = async (method, url, data = null) => {
           }
         );
 
-        // Frissítjük a token-t a localStorage-ban és a token változóban
         if (user) {
           user.token = newTokenResponse.data.accessToken;
           localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
           token = user.token; // Frissítjük a token változót is
         }
 
-        // Újra próbáljuk meg az eredeti kérést az új token-nel
         const retryResponse = await axios({
           method,
           url,
