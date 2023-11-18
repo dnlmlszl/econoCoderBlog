@@ -25,7 +25,7 @@ const blogListQuery = () => {
 // };
 
 export const loader = (queryClient) => {
-  async () => {
+  return async () => {
     await queryClient.prefetchQuery(blogListQuery());
     return {};
   };

@@ -52,6 +52,7 @@ export const BlogProvider = ({ children }) => {
           withCredentials: true,
         });
         setUser(response.data);
+        setUserLoading(false);
       } catch (error) {
         setUserLoading(false);
         if (error.response && error.response.status === 401) {

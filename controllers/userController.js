@@ -47,4 +47,22 @@ const getMe = async (req, res) => {
   });
 };
 
-module.exports = { getAllUsers, getMe };
+const getSingleUser = async (req, res) => {
+  const user = await User.findById(req.params.id)
+    .populate('blogs', {
+      title: 1,
+      author: 1,
+      url: 1,
+      likes: 1,
+      role: 1,
+    })
+    .populate('comments');
+
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+  }
+
+  res.status(StatusCodes.OK).json(user);
+};
+
+module.exports = { getAllUsers, getMe, getSingleUser };

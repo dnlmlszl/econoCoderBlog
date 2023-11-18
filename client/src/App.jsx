@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { loader as singleBlogLoader } from './pages/SingleBlogPage';
 import { loader as blogListLoader } from './pages/Landing';
 import { loader as usersLoader } from './pages/UsersPage';
+import { loader as userLoader } from './pages/SingleUser';
 
 import {
   HomeLayout,
@@ -71,7 +72,7 @@ function App() {
         {
           path: 'users/:id',
           element: <SingleUser />,
-          // loader: usersLoader(queryClient),
+          loader: userLoader(queryClient),
           errorElement: <SinglePageError />,
         },
       ],

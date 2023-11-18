@@ -12,4 +12,10 @@ const getAllUsers = async () => {
   }
 };
 
-export default { getAllUsers };
+const fetchUser = async () => {
+  const response = await axios.get(`${baseUrl}/me`, { withCredentials: true });
+
+  return response.data;
+};
+
+export default { getAllUsers, fetchUser };

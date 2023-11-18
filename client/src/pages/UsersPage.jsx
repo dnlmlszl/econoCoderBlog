@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/blogContext';
@@ -11,13 +11,14 @@ const usersQuery = () => {
     queryKey: ['users'],
     queryFn: async () => {
       const data = await userService.getAllUsers();
+      console.log('Fetching users', data);
       return data;
     },
   };
 };
 
 // export const loader = (queryClient) => {
-//   async () => {
+//   return async () => {
 //     await queryClient.ensureQueryData(usersQuery());
 
 //     return {};
@@ -25,7 +26,7 @@ const usersQuery = () => {
 // };
 
 export const loader = (queryClient) => {
-  async () => {
+  return async () => {
     await queryClient.prefetchQuery(usersQuery());
 
     return {};
@@ -33,13 +34,25 @@ export const loader = (queryClient) => {
 };
 
 const UsersPage = () => {
-  const { setNotification, user: blogUser, userLoading } = useGlobalContext();
+  const { setNotification, user: loggedInUser } = useGlobalContext();
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: userService.fetchUser,
+  });
   const {
     data: users,
     isLoading,
     isError,
     error,
-  } = useQuery({ ...usersQuery(), enabled: !userLoading || !!blogUser });
+  } = useQuery({ ...usersQuery(), enabled: !isUserLoading || !!user });
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (user) {
+      queryClient.invalidateQueries('users');
+    }
+  }, [user, queryClient]);
 
   useEffect(() => {
     if (isError) {
@@ -51,9 +64,9 @@ const UsersPage = () => {
     }
   }, [isError, error, setNotification]);
 
-  if (isLoading || userLoading) return <div className="loading" />;
+  if (isLoading || isUserLoading) return <div className="loading" />;
 
-  if (!blogUser || blogUser.role === 'visitor') {
+  if (!loggedInUser || loggedInUser.role === 'visitor') {
     return <Navigate to="/" />;
   }
 
@@ -63,12 +76,13 @@ const UsersPage = () => {
         <h1 className="text-dynamich2 font-medium mb-8 text-center">
           Users dashboard
         </h1>
-        {users && blogUser.role === 'user' && (
+        {/* {users && blogUser.role === 'user' && (
           <UserList
             users={[users.find((user) => blogUser.name === user.name)]}
           />
         )}
-        {users && blogUser.role === 'admin' && <UserList users={users} />}
+        {users && blogUser.role === 'admin' && <UserList users={users} />} */}
+        {<UserList users={users} blogUser={user} />}
       </article>
     </section>
   );

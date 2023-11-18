@@ -1,10 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const UserList = ({ users }) => {
+const UserList = ({ users, blogUser }) => {
+  console.log(blogUser, 'blogUser Userlist');
+  console.log(users, 'users UserList');
+
+  if (!blogUser) {
+    return <div className="loading" />;
+  }
+
+  let displayedUsers = users;
+
+  if (blogUser && blogUser.role === 'user') {
+    displayedUsers = users.filter((user) => user.name === blogUser.name);
+  }
+
+  console.log(displayedUsers, 'displayedUSers UserList');
+
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 xl:gap-8 mb-4">
-      {users.map((user) => (
+      {displayedUsers.map((user) => (
         <li
           key={user.id}
           className="p-4 bg-white bg-opacity-10 backdrop-blur-md border border-gray-300 rounded shadow"
