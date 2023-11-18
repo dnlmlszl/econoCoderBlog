@@ -5,11 +5,13 @@ import loginService from '../services/login';
 
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LoginForm = () => {
   const { setUser, setNotification, setIsLoggedIn } = useGlobalContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -21,6 +23,7 @@ const LoginForm = () => {
       window.localStorage.setItem('refreshToken', user.refreshToken);
 
       setUser(user);
+      queryClient.invalidateQueries('users');
       setIsLoggedIn(true);
       navigate('/');
       setNotification({
