@@ -65,4 +65,63 @@ const getSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json(user);
 };
 
-module.exports = { getAllUsers, getMe, getSingleUser };
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, username } = req.body;
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
+  } catch (error) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Invalid or expired token' });
+  }
+
+  if (!decodedToken.id || decodedToken.role === 'admin') {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Unauthorized to update user' });
+  }
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    { name, username },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+  }
+
+  res.status(StatusCodes.OK).json(user);
+};
+
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
+  } catch (error) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Invalid or expired token' });
+  }
+
+  if (!decodedToken.id || decodedToken.role === 'admin') {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Unauthorized to update user' });
+  }
+
+  const user = await User.findByIdAndDelete(id);
+
+  if (!user) {
+    return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+  }
+
+  res.status(StatusCodes.NO_CONTENT).end();
+};
+
+module.exports = { getAllUsers, getMe, getSingleUser, updateUser, deleteUser };

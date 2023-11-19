@@ -25,6 +25,7 @@ const loginUser = async (req, res) => {
 
   const userForToken = {
     username: user.username,
+    role: user.role,
     id: user.id,
   };
 
@@ -105,6 +106,7 @@ const registerUser = async (req, res) => {
   //
   const userForToken = {
     username: savedUser.username,
+    role: savedUser.role,
     id: savedUser.id,
   };
 
