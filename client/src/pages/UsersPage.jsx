@@ -11,7 +11,7 @@ const usersQuery = () => {
     queryKey: ['users'],
     queryFn: async () => {
       const data = await userService.getAllUsers();
-      console.log('Fetching users', data);
+
       return data;
     },
   };
@@ -44,13 +44,17 @@ const UsersPage = () => {
     isLoading,
     isError,
     error,
-  } = useQuery({ ...usersQuery(), enabled: !isUserLoading || !!user });
+  } = useQuery({
+    ...usersQuery(),
+    enabled: !isUserLoading || !!user,
+    refetchOnMount: true,
+  });
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (user) {
-      queryClient.invalidateQueries('users');
+    if (loggedInUser && loggedInUser.id) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     }
   }, [user, queryClient]);
 

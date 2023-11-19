@@ -1,21 +1,25 @@
-import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const UserList = ({ users, blogUser }) => {
-  console.log(blogUser, 'blogUser Userlist');
-  console.log(users, 'users UserList');
+  const queryClient = useQueryClient();
 
   if (!blogUser) {
     return <div className="loading" />;
   }
+
+  useEffect(() => {
+    if (blogUser) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    }
+  }, [blogUser, queryClient]);
 
   let displayedUsers = users;
 
   if (blogUser && blogUser.role === 'user') {
     displayedUsers = users.filter((user) => user.name === blogUser.name);
   }
-
-  console.log(displayedUsers, 'displayedUSers UserList');
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 xl:gap-8 mb-4">

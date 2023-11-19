@@ -47,7 +47,7 @@ const SingleBlogPage = () => {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  queryClient.invalidateQueries('blogs');
+  queryClient.invalidateQueries({ queryKey: ['blogs'] });
 
   const loaderData = useLoaderData();
 

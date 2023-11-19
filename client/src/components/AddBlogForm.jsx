@@ -20,7 +20,7 @@ const AddBlogForm = () => {
     mutationFn: (blog) => axios.post(`/api/v1/blogs`, blog),
   });
 
-  queryClient.invalidateQueries('blogs');
+  queryClient.invalidateQueries({ queryKey: ['blogs'] });
 
   useEffect(() => {
     const socket = io();
@@ -28,7 +28,6 @@ const AddBlogForm = () => {
     socket.on('blogCreated', (data) => {
       if (data.newBlog) {
         setBlogs((prev) => prev.concat(data.newBlog));
-        console.log(data);
       }
     });
 

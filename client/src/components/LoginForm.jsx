@@ -23,8 +23,9 @@ const LoginForm = () => {
       window.localStorage.setItem('refreshToken', user.refreshToken);
 
       setUser(user);
-      queryClient.invalidateQueries('users');
       setIsLoggedIn(true);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
       navigate('/');
       setNotification({
         message: `User ${user.username} login success`,

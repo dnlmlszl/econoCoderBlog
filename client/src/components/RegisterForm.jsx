@@ -2,6 +2,7 @@ import { useState } from 'react';
 import loginService from '../services/login';
 import { useGlobalContext } from '../context/blogContext';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 const RegisterForm = () => {
   const { setUser, setNotification } = useGlobalContext();
@@ -11,6 +12,7 @@ const RegisterForm = () => {
     email: '',
     password: '',
   });
+  const queryClient = useQueryClient();
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -24,7 +26,7 @@ const RegisterForm = () => {
 
       window.localStorage.setItem('refreshToken', user.refreshToken);
       setUser(user);
-
+      queryClient.invalidateQueries({ queryKey: ['users'] });
       setNotification({
         message: `User ${user.username} register success, user logged in`,
         type: 'success',

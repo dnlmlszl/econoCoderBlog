@@ -40,7 +40,7 @@ const Landing = () => {
     const socket = io();
 
     socket.on('blogCreated', () => {
-      queryClient.invalidateQueries('blogs');
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
     });
 
     return () => {
