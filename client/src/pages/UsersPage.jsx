@@ -6,11 +6,11 @@ import userService from '../services/users';
 
 import UserList from '../components/UserList';
 
-const userQuery = () => {
+const usersQuery = () => {
   return {
-    queryKey: ['user'],
+    queryKey: ['users'],
     queryFn: async () => {
-      const data = await userService.fetchUser();
+      const data = await userService.getAllUsers();
 
       return data;
     },
@@ -19,7 +19,7 @@ const userQuery = () => {
 
 export const loader = (queryClient) => {
   return async () => {
-    await queryClient.prefetchQuery(userQuery());
+    await queryClient.prefetchQuery(usersQuery());
 
     return {};
   };
@@ -27,7 +27,7 @@ export const loader = (queryClient) => {
 
 const UsersPage = () => {
   const { setNotification, user: loggedInUser } = useGlobalContext();
-  const { data: user, isLoading, isError, error } = useQuery(userQuery());
+  const { data: users, isLoading, isError, error } = useQuery(userQuery());
 
   if (isError) {
     setNotification({ type: 'error', message: error.message });
@@ -54,7 +54,7 @@ const UsersPage = () => {
           />
         )}
         {users && blogUser.role === 'admin' && <UserList users={users} />} */}
-        {<UserList users={[user]} isLoading={isLoading} />}
+        {<UserList users={users} isLoading={isLoading} />}
       </article>
     </section>
   );
