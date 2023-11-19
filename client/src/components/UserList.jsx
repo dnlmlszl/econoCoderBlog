@@ -1,25 +1,16 @@
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const UserList = ({ users, blogUser }) => {
+const UserList = ({ users, blogUser, isLoading }) => {
   const queryClient = useQueryClient();
-
-  if (!blogUser) {
-    return <div className="loading" />;
-  }
-
-  useEffect(() => {
-    if (blogUser) {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-    }
-  }, [blogUser, queryClient]);
 
   let displayedUsers = users;
 
   if (blogUser && blogUser.role === 'user') {
     displayedUsers = users.filter((user) => user.name === blogUser.name);
   }
+
+  if (isLoading) return <div className="loading" />;
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 xl:gap-8 mb-4">
@@ -57,6 +48,7 @@ const UserList = ({ users, blogUser }) => {
           <p className="mt-4 text-dynamicp">
             No of comments: {user?.comments?.length || 0}
           </p>
+          {user.role === 'admin' && <Link to="/admin">Admin</Link>}
         </li>
       ))}
     </ul>

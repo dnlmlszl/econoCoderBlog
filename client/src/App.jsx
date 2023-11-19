@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { loader as singleBlogLoader } from './pages/SingleBlogPage';
 import { loader as blogListLoader } from './pages/Landing';
 import { loader as usersLoader } from './pages/UsersPage';
+import { loader as adminLoader } from './pages/AdminPage';
 import { loader as userLoader } from './pages/SingleUser';
 
 import {
@@ -18,6 +19,7 @@ import {
   LoginPage,
   RegisterPage,
   UsersPage,
+  AdminPage,
   SingleUser,
 } from './pages';
 import PrivateRoute from './pages/PrivateRoute';
@@ -27,6 +29,9 @@ function App() {
     defaultOptions: {
       queries: {
         staleTime: 60 * 5 * 1000,
+        retry: 1,
+        retryDelay: 1000,
+        refetchOnWindowFocus: true,
       },
     },
   });
@@ -67,6 +72,16 @@ function App() {
           path: 'users',
           element: <UsersPage />,
           loader: usersLoader(queryClient),
+          errorElement: <SinglePageError />,
+        },
+        {
+          path: 'admin',
+          element: (
+            <PrivateRoute adminOnly={true}>
+              <AdminPage />
+            </PrivateRoute>
+          ),
+          loader: adminLoader(queryClient),
           errorElement: <SinglePageError />,
         },
         {

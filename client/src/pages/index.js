@@ -2,6 +2,7 @@ export { default as HomeLayout } from './HomeLayout';
 export { default as Landing } from './Landing';
 export { default as About } from './About';
 export { default as UsersPage } from './UsersPage';
+export { default as AdminPage } from './AdminPage';
 export { default as SingleUser } from './SingleUser';
 export { default as SingleBlogPage } from './SingleBlogPage';
 export { default as NewBlog } from './NewBlog';

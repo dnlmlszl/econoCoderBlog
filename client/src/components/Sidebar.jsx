@@ -40,7 +40,7 @@ const Sidebar = () => {
       icon: <AiOutlinePlusCircle size={24} />,
       path: '/blog/new',
     },
-  ];
+  ].filter(Boolean);
 
   if (user) {
     navItems.push({
