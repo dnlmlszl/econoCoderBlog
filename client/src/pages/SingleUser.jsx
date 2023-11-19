@@ -39,21 +39,30 @@ const SingleUser = () => {
   const navigate = useNavigate();
   const loaderData = useLoaderData();
   const { id } = loaderData;
+
   const {
     data: user,
     isLoading,
     isError,
     error,
   } = useQuery(singleUserQuery(id));
+
   const queryClient = useQueryClient();
 
   const [name, setName] = useState(user?.name || '');
   const [username, setUsername] = useState(user?.username || '');
 
   useEffect(() => {
-    if (isLoading || isError) {
+    if (isLoading) {
       return;
     }
+
+    if (isError) {
+      if (error.response && error.response.status === 403) {
+        navigate('/');
+      }
+    }
+
     if (
       !loggedInUser ||
       (loggedInUser.id !== id && loggedInUser.role !== 'admin')
