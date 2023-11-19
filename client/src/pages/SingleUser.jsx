@@ -45,6 +45,8 @@ const SingleUser = () => {
     isError,
     error,
   } = useQuery(singleUserQuery(id));
+  const queryClient = useQueryClient();
+
   const [name, setName] = useState(user?.name || '');
   const [username, setUsername] = useState(user?.username || '');
 
@@ -63,6 +65,7 @@ const SingleUser = () => {
         message: 'User updated successfully',
         type: 'success',
       });
+      queryClient.invalidateQueries({ queryKey: ['user', id] });
     } catch (error) {
       console.error(error);
       setNotification({ type: 'error', message: 'Error updating user' });
@@ -90,14 +93,6 @@ const SingleUser = () => {
       }, 5000);
     }
   };
-
-  //   const queryClient = useQueryClient();
-  //   queryClient.invalidateQueries('users');
-
-  //   if (!loaderData || !loaderData?.id) {
-  //     navigate('/');
-  //     return null;
-  //   }
 
   return (
     <section className="container bg-white bg-opacity-10 backdrop-blur-md mt-24 mx-auto p-6">

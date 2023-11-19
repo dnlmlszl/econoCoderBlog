@@ -78,7 +78,7 @@ const updateUser = async (req, res) => {
       .json({ message: 'Invalid or expired token' });
   }
 
-  if (!decodedToken.id || decodedToken.role === 'admin') {
+  if (!decodedToken.id || !decodedToken.role === 'admin') {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Unauthorized to update user' });
@@ -109,7 +109,7 @@ const deleteUser = async (req, res) => {
       .json({ message: 'Invalid or expired token' });
   }
 
-  if (!decodedToken.id || decodedToken.role === 'admin') {
+  if (!decodedToken.id || !decodedToken.role === 'admin') {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Unauthorized to update user' });

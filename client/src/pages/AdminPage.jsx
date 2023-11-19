@@ -33,6 +33,8 @@ const AdminPage = () => {
     userLoading,
   } = useGlobalContext();
 
+  queryClient.invalidateQueries({ queryKey: ['users'] });
+
   if (isError) {
     setNotification({ type: 'error', message: error.message });
     setTimeout(() => {
