@@ -27,7 +27,7 @@ export const loader = (queryClient) => {
 
 const UsersPage = () => {
   const { setNotification, user: loggedInUser } = useGlobalContext();
-  const { data: users, isLoading, isError, error } = useQuery(userQuery());
+  const { data: users, isLoading, isError, error } = useQuery(usersQuery());
 
   if (isError) {
     setNotification({ type: 'error', message: error.message });
@@ -54,7 +54,13 @@ const UsersPage = () => {
           />
         )}
         {users && blogUser.role === 'admin' && <UserList users={users} />} */}
-        {<UserList users={users} isLoading={isLoading} />}
+        {
+          <UserList
+            users={users}
+            isLoading={isLoading}
+            blogUser={loggedInUser}
+          />
+        }
       </article>
     </section>
   );

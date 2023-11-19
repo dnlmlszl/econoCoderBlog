@@ -6,7 +6,9 @@ const UserList = ({ users, blogUser, isLoading }) => {
 
   let displayedUsers = users;
 
-  displayedUsers = users.filter((user) => user.name === blogUser.name);
+  blogUser && blogUser.role === 'user'
+    ? (displayedUsers = users.filter((user) => user.name === blogUser.name))
+    : (displayedUsers = users);
 
   if (isLoading) return <div className="loading" />;
 
