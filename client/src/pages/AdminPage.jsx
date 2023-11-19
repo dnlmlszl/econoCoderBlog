@@ -25,6 +25,7 @@ export const loader = (queryClient) => {
 };
 
 const AdminPage = () => {
+  const queryClient = useQueryClient();
   const { data: users, isLoading, isError, error } = useQuery(usersQuery());
   const {
     setNotification,
@@ -41,8 +42,12 @@ const AdminPage = () => {
 
   if (isLoading || userLoading) return <div className="loading" />;
 
-  if (!loggedInUser || loggedInUser.role !== 'admin') {
+  if (!loggedInUser) {
     return <Navigate to="/" replace={true} />;
+  }
+
+  if (loggedInUser.role !== 'admin') {
+    return <div>You do not have permission to access this page.</div>;
   }
 
   return (
