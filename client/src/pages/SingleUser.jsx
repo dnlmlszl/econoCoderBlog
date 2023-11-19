@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ export const loader =
   };
 
 const SingleUser = () => {
-  const { setNotification } = useGlobalContext();
+  const { setNotification, user: loggedInUser } = useGlobalContext();
 
   const navigate = useNavigate();
   const loaderData = useLoaderData();
@@ -49,6 +49,18 @@ const SingleUser = () => {
 
   const [name, setName] = useState(user?.name || '');
   const [username, setUsername] = useState(user?.username || '');
+
+  useEffect(() => {
+    if (isLoading || isError) {
+      return;
+    }
+    if (
+      !loggedInUser ||
+      (loggedInUser.id !== id && loggedInUser.role !== 'admin')
+    ) {
+      navigate('/');
+    }
+  }, [loggedInUser, id, navigate, isLoading, isError]);
 
   if (isLoading) {
     return <div className="loading" />;

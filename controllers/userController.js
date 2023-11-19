@@ -48,7 +48,22 @@ const getMe = async (req, res) => {
 };
 
 const getSingleUser = async (req, res) => {
-  const user = await User.findById(req.params.id)
+  const { id } = req.params;
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(req.cookies.accessToken, process.env.SECRET);
+  } catch (error) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Invalid or expired token' });
+  }
+
+  if (decodedToken.id !== id && decodedToken.role !== 'admin') {
+    return res.status(StatusCodes.FORBIDDEN).json({ error: 'Access denied' });
+  }
+
+  const user = await User.findById(id)
     .populate('blogs', {
       title: 1,
       author: 1,
@@ -78,7 +93,7 @@ const updateUser = async (req, res) => {
       .json({ message: 'Invalid or expired token' });
   }
 
-  if (!decodedToken.id || !decodedToken.role === 'admin') {
+  if (!decodedToken.id || decodedToken.role !== 'admin') {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Unauthorized to update user' });
@@ -109,7 +124,7 @@ const deleteUser = async (req, res) => {
       .json({ message: 'Invalid or expired token' });
   }
 
-  if (!decodedToken.id || !decodedToken.role === 'admin') {
+  if (!decodedToken.id || decodedToken.role !== 'admin') {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: 'Unauthorized to update user' });
