@@ -66,6 +66,7 @@ const SingleUser = () => {
         type: 'success',
       });
       queryClient.invalidateQueries({ queryKey: ['user', id] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     } catch (error) {
       console.error(error);
       setNotification({ type: 'error', message: 'Error updating user' });
