@@ -59,7 +59,7 @@ const getSingleUser = async (req, res) => {
       .json({ error: 'Invalid or expired token' });
   }
 
-  if (!decodedToken.id || decodedToken.role !== 'admin') {
+  if (decodedToken.id !== id && decodedToken.role !== 'admin') {
     return res.status(StatusCodes.FORBIDDEN).json({ error: 'Access denied' });
   }
 
