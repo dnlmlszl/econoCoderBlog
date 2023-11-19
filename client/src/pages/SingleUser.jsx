@@ -58,18 +58,22 @@ const SingleUser = () => {
     }
 
     if (isError) {
-      if (error.response && error.response.status === 403) {
+      if (
+        error.response &&
+        error.response.status === 403 &&
+        loggedInUser.role !== 'admin'
+      ) {
         navigate('/');
       }
     }
 
-    if (
-      !loggedInUser ||
-      (loggedInUser.id !== id && loggedInUser.role !== 'admin')
-    ) {
-      navigate('/');
-    }
-  }, [loggedInUser, id, navigate, isLoading, isError]);
+    // if (
+    //   !loggedInUser ||
+    //   (loggedInUser.id !== id && loggedInUser.role !== 'admin')
+    // ) {
+    //   navigate('/');
+    // }
+  }, [loggedInUser, navigate, isLoading, isError, error]);
 
   if (isLoading) {
     return <div className="loading" />;
