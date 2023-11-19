@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { useGlobalContext } from '../context/blogContext';
 import userService from '../services/users';
 
 import UserList from '../components/UserList';
+import { Navigate } from 'react-router-dom';
 
 const usersQuery = () => {
   return {
@@ -26,7 +26,11 @@ export const loader = (queryClient) => {
 
 const AdminPage = () => {
   const { data: users, isLoading, isError, error } = useQuery(usersQuery());
-  const { setNotification } = useGlobalContext();
+  const {
+    setNotification,
+    user: loggedInUser,
+    userLoading,
+  } = useGlobalContext();
 
   if (isError) {
     setNotification({ type: 'error', message: error.message });
@@ -35,7 +39,11 @@ const AdminPage = () => {
     }, 5000);
   }
 
-  if (isLoading) return <div className="loading" />;
+  if (isLoading || userLoading) return <div className="loading" />;
+
+  if (!loggedInUser || loggedInUser.role !== 'admin') {
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <section className="mt-24 text-white">

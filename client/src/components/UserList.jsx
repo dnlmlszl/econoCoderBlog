@@ -1,16 +1,18 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { useGlobalContext } from '../context/blogContext';
 
 const UserList = ({ users, blogUser, isLoading }) => {
   const queryClient = useQueryClient();
+  const { userLoading } = useGlobalContext();
 
   let displayedUsers = users;
 
-  blogUser && blogUser.role === 'user'
-    ? (displayedUsers = users.filter((user) => user.name === blogUser.name))
-    : (displayedUsers = users);
+  if (blogUser) {
+    displayedUsers = users.filter((user) => user.name === blogUser.name);
+  }
 
-  if (isLoading) return <div className="loading" />;
+  if (isLoading || userLoading) return <div className="loading" />;
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 xl:gap-8 mb-4">

@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/blogContext';
 import userService from '../services/users';
@@ -26,7 +25,11 @@ export const loader = (queryClient) => {
 };
 
 const UsersPage = () => {
-  const { setNotification, user: loggedInUser } = useGlobalContext();
+  const {
+    setNotification,
+    user: loggedInUser,
+    userLoading,
+  } = useGlobalContext();
   const { data: users, isLoading, isError, error } = useQuery(usersQuery());
 
   if (isError) {
@@ -36,7 +39,7 @@ const UsersPage = () => {
     }, 5000);
   }
 
-  if (isLoading) return <div className="loading" />;
+  if (isLoading || userLoading) return <div className="loading" />;
 
   if (!loggedInUser || loggedInUser.role === 'visitor') {
     return <Navigate to="/" />;
@@ -48,12 +51,6 @@ const UsersPage = () => {
         <h1 className="text-dynamich2 font-medium mb-8 text-center">
           Users dashboard
         </h1>
-        {/* {users && blogUser.role === 'user' && (
-          <UserList
-            users={[users.find((user) => blogUser.name === user.name)]}
-          />
-        )}
-        {users && blogUser.role === 'admin' && <UserList users={users} />} */}
         {
           <UserList
             users={users}
