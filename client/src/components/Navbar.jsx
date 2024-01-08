@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const linkClass = ({ isActive }) =>
     isActive
-      ? 'text-white border-b-2 border-yellow-500 px-3 py-2 rounded'
+      ? 'text-white border-b-2 border-yellow-500 px-3 py-2'
       : 'text-white hover:text-yellow-500 px-3 py-2 rounded';
 
   return (

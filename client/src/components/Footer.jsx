@@ -2,18 +2,19 @@ import { FaLinkedinIn, FaTwitter } from 'react-icons/fa';
 import { HiOutlineMailOpen } from 'react-icons/hi';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
   return (
-    <footer className="text-white py-8 md:py-4 bg-white bg-opacity-10 backdrop-blur-md">
-      <div className="container mx-auto max-w-6xl px-4 flex flex-col md:flex-row flex-wrap justify-between items-center gap-4 md:gap-0">
-        {/* Quick Links Section */}
-        <div className="flex-1 flex justify-center mb-4 md:justify-start md:mb-0 order-2 md:order-1">
-          <div>
-            <h3 className="text-lg text-center font-semibold">Quick Links</h3>
-            <ul className="text-gray-400 text-sm text-center mt-2 grid grid-cols-2 gap-x-2">
+    <footer className="bg-white bg-opacity-10 backdrop-blur-md text-white py-4 md:p-6">
+      <div className="container mx-auto max-w-6xl px-4">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          {/* Quick Links Section */}
+          <div className="flex flex-col md:flex-row justify-between text-center md:text-left mb-4 md:mb-0">
+            {/* <h3 className="font-semibold mb-2 md:mb-0">Quick Links</h3> */}
+            <ul className="flex flex-wrap justify-center gap-2 md:gap-4 text-gray-400">
               <li>
                 <a
                   href="https://econocoder.onrender.com"
-                  className="hover:text-white"
+                  className="hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -23,7 +24,7 @@ const Footer = () => {
               <li>
                 <a
                   href="mailto:daniel.mlaszlo@yahoo.com"
-                  className="hover:text-white"
+                  className="hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -33,7 +34,7 @@ const Footer = () => {
               <li>
                 <a
                   href="/faq"
-                  className="hover:text-white"
+                  className="hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -43,7 +44,7 @@ const Footer = () => {
               <li>
                 <a
                   href="/support"
-                  className="hover:text-white"
+                  className="hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -52,43 +53,35 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-        </div>
 
-        {/* Copyright Section */}
-        <div className="flex-1 flex justify-center order-1 md:order-2">
-          <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} econo
+          {/* Copyright Section */}
+          <div className="text-center md:text-left text-gray-400 mb-4 md:mb-0">
+            &copy; {currentYear} econo
             <span className="text-yellow-800">Coder</span> Blog App. All rights
             reserved.
-          </p>
-        </div>
+          </div>
 
-        {/* Social Links Section */}
-        <div className="flex-1 flex justify-center md:justify-end gap-4 order-3">
-          <div className="mb-4">
+          {/* Social Links Section */}
+          <div className="flex justify-center md:justify-end gap-4">
             <a
               href="https://twitter.com/dn1el_lszl0"
-              className="text-white hover:text-gray-400"
+              className="hover:text-gray-400"
               target="_blank"
               rel="noreferrer"
             >
               <FaTwitter size={20} />
             </a>
-          </div>
-          <div className="mb-4">
             <a
-              href="https://www.linkedin.com/in/l%C3%A1szl%C3%B3-d%C3%A1niel-a39a956b/"
-              className="text-white hover:text-gray-400"
+              href="https://www.linkedin.com/in/lászló-dániel-a39a956b/"
+              className="hover:text-gray-400"
               target="_blank"
               rel="noreferrer"
             >
               <FaLinkedinIn size={20} />
             </a>
-          </div>
-          <div className="mb-4">
             <a
               href="mailto:daniel.mlaszlo@yahoo.com"
-              className="text-white hover:text-gray-400"
+              className="hover:text-gray-400"
               target="_blank"
               rel="noreferrer"
             >

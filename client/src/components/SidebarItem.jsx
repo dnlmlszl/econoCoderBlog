@@ -12,14 +12,16 @@ const SidebarItem = ({ item }) => {
   };
 
   return (
-    <li className="flex items-center space-x-2">
+    <li className="flex w-full">
       <Link
         to={item.path}
         onClick={handleClick}
-        className="text-white flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        className="text-white flex items-center px-4 py-2 hover:bg-gray-700/30 rounded w-full"
       >
-        {item.icon}
-        <span className="ml-2">{item.name}</span>
+        <div className="flex-1 flex items-center">
+          {item.icon}
+          <span className="ml-2">{item.name}</span>
+        </div>
       </Link>
     </li>
   );
